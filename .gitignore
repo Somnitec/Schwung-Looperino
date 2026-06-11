@@ -1,0 +1,5 @@
+/dist/
+*.so
+*.o
+*.tar.gz
+.DS_Store

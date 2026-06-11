@@ -1,0 +1,52 @@
+{
+    "title": "Looperoni",
+    "children": [
+        {
+            "title": "Overview",
+            "lines": [
+                "Live looper. Each pad",
+                "is a loop cell you",
+                "record, overdub and",
+                "play in sync."
+            ]
+        },
+        {
+            "title": "Pads",
+            "lines": [
+                "Press empty: record",
+                "Press REC: play/keep",
+                "Press play: stop",
+                "Press stop: play",
+                "Delete+pad: clear"
+            ]
+        },
+        {
+            "title": "Buttons",
+            "lines": [
+                "Record: overdub sel",
+                "Play: stop/play all",
+                "Loop: Bar/Beat/Free",
+                "Up/Dn: tempo +/-",
+                "Shift+Capture: wipe"
+            ]
+        },
+        {
+            "title": "Knobs",
+            "lines": [
+                "Jog: select loop",
+                "Shift+Jog: tempo",
+                "Knob1: loop volume",
+                "Knob2: input monitor",
+                "Master: out volume"
+            ]
+        },
+        {
+            "title": "Exit",
+            "lines": [
+                "Shift + Volume touch",
+                "+ Jog click leaves",
+                "the takeover."
+            ]
+        }
+    ]
+}

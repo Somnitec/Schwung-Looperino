@@ -1,0 +1,20 @@
+{
+    "id": "looperoni",
+    "name": "Looperoni",
+    "abbrev": "LOOP",
+    "version": "0.1.0",
+    "description": "Live multitrack loop pedal takeover for Move: pads are loop cells you record, overdub, play and stop in sync.",
+    "author": "Somnitec",
+    "license": "Unlicense",
+    "api_version": 2,
+    "ui": "ui.js",
+    "dsp": "dsp.so",
+    "component_type": "overtake",
+    "capabilities": {
+        "audio_in": true,
+        "audio_out": true,
+        "midi_in": true,
+        "midi_out": false,
+        "raw_ui": true
+    }
+}

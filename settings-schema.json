@@ -1,0 +1,14 @@
+{
+    "id": "looperoni",
+    "label": "Looperoni",
+    "items": [
+        { "key": "default_quant", "label": "Quantize", "type": "enum",
+          "options": ["Free", "Bar", "Beat"], "values": ["0", "1", "2"], "default": "1" },
+        { "key": "max_loop_seconds", "label": "Max loop length", "type": "int",
+          "min": 4, "max": 120, "step": 1, "default": 16 },
+        { "key": "monitor_default", "label": "Input monitor", "type": "float",
+          "min": 0, "max": 1, "step": 0.05, "default": 1.0 },
+        { "key": "master_vol_default", "label": "Master volume", "type": "float",
+          "min": 0, "max": 1.5, "step": 0.05, "default": 0.9 }
+    ]
+}

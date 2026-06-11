@@ -1,0 +1,45 @@
+# Build Looperoni and publish a module tarball when a v* tag is pushed.
+#
+#   git tag v0.1.0 && git push --tags
+#
+# Produces looperoni-module.tar.gz (extracting to looperoni/) and attaches it
+# to a GitHub release, matching the download_url in release.json.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  MODULE_ID: looperoni
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install aarch64 cross compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu file
+
+      - name: Build module
+        run: |
+          chmod +x scripts/build.sh
+          CROSS_PREFIX=aarch64-linux-gnu- ./scripts/build.sh
+
+      - name: Create tarball
+        run: |
+          cd dist
+          tar -czvf "../${MODULE_ID}-module.tar.gz" "${MODULE_ID}/"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.MODULE_ID }}-module.tar.gz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
