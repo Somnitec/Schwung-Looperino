@@ -24,9 +24,10 @@ open questions get decided on-device by feel, with Arvid.
 
 ## Environment
 
-- Dev machine shell runs inside the VS Code **flatpak sandbox** — host tools
-  (`gh`, others) may be missing from PATH; don't conclude they're absent from
-  the machine. `flatpak-spawn --host <cmd>` may reach host tools.
+- Dev machine (verified 2026-07-06): VS Code runs as a **snap with full host
+  access** — Fedora host tools work directly, **rootless podman works** (used
+  for cross-compiling; SELinux needs `:Z` on volume mounts). Older notes
+  claiming a flatpak sandbox are stale.
 - The Move is on the local network: SSH via `ableton@move.local` (key added
   through http://move.local/development/ssh). Schwung Manager web UI:
   http://move.local:7700. Modules live in `/data/UserData/schwung/modules/`.
