@@ -11,8 +11,12 @@ diving.
 
 ## Status
 
-Early development. The design is settled ([docs/DESIGN.md](docs/DESIGN.md));
-first milestone is an on-device audio-input/latency spike.
+Early development. The design is settled ([docs/DESIGN.md](docs/DESIGN.md)).
+
+**M0 (input/latency spike) — done, GO.** Measured round-trip latency
+(output → input, cable loopback) on device: **7.98 ms**. Comfortably low
+enough for wet-monitored live vocals — locked decision #2 in DESIGN.md is
+confirmed feasible. Next: M1, a single working looper track.
 
 ## Layout at a glance
 
