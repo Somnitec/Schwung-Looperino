@@ -1,0 +1,11 @@
+# local study clones — re-clone per CLAUDE.md if needed
+reference/
+
+# build output
+build/
+dist/
+*.so
+*.tar.gz
+
+# local toolchain installs
+toolchain/

@@ -1,0 +1,19 @@
+{
+  "id": "looperino",
+  "name": "Looperino",
+  "abbrev": "LOOP",
+  "version": "0.0.1",
+  "author": "Somnitec",
+  "description": "Live looper performance instrument. M0: input/latency spike.",
+  "ui": "ui.js",
+  "dsp": "dsp.so",
+  "api_version": 2,
+  "component_type": "overtake",
+  "capabilities": {
+    "audio_in": true,
+    "audio_out": true,
+    "midi_in": true,
+    "raw_ui": true,
+    "suspend_keeps_js": true
+  }
+}
