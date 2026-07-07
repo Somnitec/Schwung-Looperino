@@ -117,6 +117,8 @@ void chain_init(input_chain_t *c, float *rev_mem, float *dly_mem) {
     c->dly.buf = dly_mem;
     c->dly.pos = 0;
     c->preset_idx = -1;
+    c->bypass = 1;                    /* M1: record dry until FX is tuned on device */
+    c->dcb_x1 = c->dcb_y1 = 0.0f;
     chain_set_preset(c, 3, 100.0f);   /* default: vocal */
 }
 
@@ -169,12 +171,13 @@ void chain_set_preset(input_chain_t *c, int flavor, float bpm) {
 /* ================= per-sample stages ================= */
 static inline float gate_run(gate_t *g, float x, const chain_preset_t *pr) {
     float a = fabsf(x);
-    /* envelope follower */
-    float coef = a > g->env ? pr->gate_att : pr->gate_rel;
+    /* envelope follower: FAST attack, SLOW release (a gate must open quickly and
+     * close gently, else it chops speech into clicks). Fixed coeffs; the preset
+     * only sets the open threshold. */
+    float coef = a > g->env ? 0.30f : 0.0015f;
     g->env += coef * (a - g->env);
     float target = g->env > pr->gate_thresh ? 1.0f : 0.0f;
-    /* smooth the gate gain so it doesn't click */
-    g->gain += 0.01f * (target - g->gain);
+    g->gain += 0.02f * (target - g->gain);   /* ~1 ms gain glide, click-free */
     return x * g->gain;
 }
 
@@ -233,6 +236,19 @@ static inline void reverb_run(reverb_t *r, float inl, float inr, float *outl, fl
 void chain_process(input_chain_t *c, const int16_t *in, float *out_l,
                    float *out_r, int frames, float bpm) {
     (void)bpm;
+    /* Bypass: record/monitor essentially what came in — sum to mono, block DC
+     * (~14 Hz), unity gain. This is the M1 default so loops sound like the
+     * source; the flavored FX chain below is opt-in (set_param chain_fx=1). */
+    if (c->bypass) {
+        for (int i = 0; i < frames; i++) {
+            float x = (in[2*i] + in[2*i+1]) * (0.5f/32768.0f);
+            float y = x - c->dcb_x1 + 0.998f * c->dcb_y1;
+            c->dcb_x1 = x; c->dcb_y1 = y;
+            if (y < 1e-20f && y > -1e-20f) y = 0.0f;
+            out_l[i] = y; out_r[i] = y;
+        }
+        return;
+    }
     const chain_preset_t *pr = c->preset;
     delay_t *d = &c->dly;
     for (int i = 0; i < frames; i++) {

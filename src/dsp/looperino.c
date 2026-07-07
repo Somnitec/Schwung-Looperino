@@ -503,12 +503,24 @@ static void pad_off(looperino_t *lp, int note) {
     }
     if (role == ROLE_FX) { punch_release(&lp->pfx, val); return; }
     if (role != ROLE_CLIP) return;
-    if (lp->pad[padi].consumed) return;
 
     int clipidx = lp->pad[padi].clip;
     if (clipidx < 0 || clipidx >= N_CLIPS) return;   /* padmap remapped mid-hold */
     clip_t *c = &lp->clips[clipidx];
     int64_t held = lp->pad[padi].up_frame - lp->pad[padi].down_frame;
+
+    /* Recording the initial take supports BOTH gestures:
+     *  - HOLD: press-and-hold records; releasing (after HOLD_MS) ends it.
+     *  - TAP-TAP: a quick tap starts recording (release keeps it running);
+     *    the next tap ends it (handled in act_clip_press).
+     * So a release only ends recording if this press was a genuine hold. */
+    if (lp->rec_clip == clipidx && c->rec_layer < 0 &&
+        (c->state==CS_RECORDING || c->state==CS_ARMED || c->state==CS_ENDQ)) {
+        if (held >= MS2FRAMES(HOLD_MS)) rec_end_tap(lp, clipidx);
+        return;
+    }
+
+    if (lp->pad[padi].consumed) return;
 
     if (lp->pad[padi].was_hold) {
         /* an overdub was in progress: commit it */
@@ -597,6 +609,7 @@ static void lp_set_param(void *inst, const char *key, const char *val) {
         chain_set_preset(&lp->chain, lp->input_route, lp->bpm>20?lp->bpm:100.0f);
         return;
     }
+    if (!strcmp(key,"chain_fx")) { lp->chain.bypass = atoi(val)?0:1; return; }
     if (!strcmp(key,"mon")) { lp->monitor = atoi(val)?1:0; return; }
     if (!strcmp(key,"allow_monitor")) { lp->allow_monitor = atoi(val)?1:0; return; }
     if (!strcmp(key,"monitor_gain")) { float g=strtof(val,0); if(g>=0&&g<=4) lp->monitor_gain=g; return; }
@@ -997,7 +1010,7 @@ static void render_clips(looperino_t *lp, int frames) {
             if (c->gain_cur==target && target==0.0f) continue;
             float *out = lp->tbuf[t];
             int len = c->len;
-            int seam = SEAM_XFADE; if (seam > len/2) seam = len/2;
+            int fade = LOOP_EDGE_FADE; if (fade > len/2) fade = len/2;
             for (int i=0;i<frames;i++){
                 int64_t d = (lp->timeline+i) - c->anchor; int64_t pp=d%len; if(pp<0)pp+=len;
                 int pos=(int)pp;
@@ -1005,15 +1018,13 @@ static void render_clips(looperino_t *lp, int frames) {
                 for (int k=0;k<MAX_LAYERS;k++) if(c->layers[k].buf && c->layers[k].in_mix){
                     l += c->layers[k].buf[2*pos]/32768.0f; r += c->layers[k].buf[2*pos+1]/32768.0f;
                 }
-                /* seam crossfade: blend tail with head */
-                if (pos >= len-seam && seam>0){
-                    int hp = pos-(len-seam);           /* 0..seam */
-                    float f = (float)hp/seam;
-                    float hl=c->base[2*hp]/32768.0f, hr=c->base[2*hp+1]/32768.0f;
-                    for (int k=0;k<MAX_LAYERS;k++) if(c->layers[k].buf && c->layers[k].in_mix){
-                        hl += c->layers[k].buf[2*hp]/32768.0f; hr += c->layers[k].buf[2*hp+1]/32768.0f;
-                    }
-                    l = l*(1.0f-f)+hl*f; r = r*(1.0f-f)+hr*f;
+                /* short in/out fade each loop so the wrap seam passes through
+                 * zero — no click regardless of where the bar boundary lands */
+                if (fade>0) {
+                    float e = 1.0f;
+                    if (pos < fade) e = (float)pos/fade;
+                    else if (pos >= len-fade) e = (float)(len-1-pos)/fade;
+                    l *= e; r *= e;
                 }
                 c->gain_cur += STOP_FADE_COEF*(target-c->gain_cur);
                 out[2*i]   += l*c->gain_cur;

@@ -86,6 +86,7 @@ for (let t = 0; t < 4; t++) {
 let masterGain = 1.0;
 let monitor = 0;
 let metroOn = 0;
+let chainFx = 0;      // 0 = record dry (default), 1 = flavored input chain
 
 // ---------------- status parsing ----------------
 function parseStatus(s) {
@@ -286,6 +287,8 @@ const MENU = [
       toggle: () => { metroOn = metroOn ? 0 : 1; sp('metro', metroOn); } },
     { label: 'Monitor', get: () => monitor ? 'on' : 'off',
       toggle: () => { monitor = monitor ? 0 : 1; sp('mon', monitor); } },
+    { label: 'Input FX', get: () => chainFx ? 'on' : 'dry',
+      toggle: () => { chainFx = chainFx ? 0 : 1; sp('chain_fx', chainFx); } },
     { label: 'Instr type', get: () => instrType[selInstrTrack()] ? 'synth' : 'drum',
       toggle: () => { const t = selInstrTrack(); instrType[t] = instrType[t] ? 0 : 1;
                       sp('itype', t + ':' + instrType[t]); pushPadmap(); } },

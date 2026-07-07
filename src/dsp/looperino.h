@@ -46,7 +46,8 @@
 #define HOLD_MS         330      /* press becomes hold/record/overdub */
 #define QUANT_GRACE_MS  120      /* press just after a bar snaps back to it */
 #define STOP_FADE_COEF  0.0022f  /* one-pole clip gain, ~10 ms (magneto) */
-#define SEAM_XFADE      882      /* ~20 ms equal-power loop-seam blend */
+#define LOOP_EDGE_FADE  160      /* ~3.6 ms in/out fade per loop so the seam
+                                  * always passes through zero (click-free) */
 #define FIRSTLOOP_TARGET_BPM 100.0f
 #define FIRSTLOOP_MIN_BPM    65.0f
 #define FIRSTLOOP_MAX_BPM    180.0f
@@ -128,6 +129,8 @@ typedef struct {
     reverb_t rev;
     const chain_preset_t *preset;
     int      preset_idx;
+    int      bypass;                 /* 1 = record/monitor dry (M1 default) */
+    float    dcb_x1, dcb_y1;         /* DC blocker state (bypass path) */
 } input_chain_t;
 
 /* ---------- punch FX state (punchfx.c) ---------- */
