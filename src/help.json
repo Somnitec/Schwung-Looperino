@@ -1,0 +1,57 @@
+{
+  "title": "Looperino",
+  "pages": [
+    {
+      "heading": "Clips (left half)",
+      "lines": [
+        "press empty = record",
+        "tap = play / stop",
+        "hold = overdub",
+        "2tap = undo  3tap = del",
+        "hold+pad = copy",
+        "1st loop sets tempo"
+      ]
+    },
+    {
+      "heading": "Tracks & views",
+      "lines": [
+        "Trk 1-4 = loopers",
+        "Shift+Trk = instr 5-8",
+        "same again = master",
+        "Left/Right = view",
+        "A clips|inst B clips|fx",
+        "C inst|fx"
+      ]
+    },
+    {
+      "heading": "Instruments",
+      "lines": [
+        "right half = kit / notes",
+        "Sample = arm capture",
+        "steps 1-16 = sequence",
+        "hold step + jog = prob",
+        "Play = run sequencer"
+      ]
+    },
+    {
+      "heading": "FX & chords",
+      "lines": [
+        "fx pads = punch-in",
+        "held = momentary",
+        "targets sel trk / master",
+        "jog = chord journey",
+        "jog click = commit@bar"
+      ]
+    },
+    {
+      "heading": "Transport",
+      "lines": [
+        "knobs 1-8 = track vol",
+        "master knob = out vol",
+        "Menu = settings",
+        "Back = park (keep loops)",
+        "Shift+Back = exit"
+      ]
+    }
+  ]
+}

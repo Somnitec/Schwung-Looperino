@@ -15,6 +15,7 @@ DEST=/data/UserData/schwung/modules/overtake/looperino
 ssh "$MOVE_HOST" "mkdir -p $DEST"
 scp dist/looperino/module.json dist/looperino/ui.js dist/looperino/dsp.so \
     "$MOVE_HOST:$DEST/"
+[ -f dist/looperino/help.json ] && scp dist/looperino/help.json "$MOVE_HOST:$DEST/"
 
 echo "Deployed to $MOVE_HOST:$DEST"
 echo "Launch on device: Shift+Vol+Jog-Click (Tools menu) -> Looperino"

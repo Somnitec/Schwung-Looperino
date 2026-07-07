@@ -16,7 +16,19 @@ Early development. The design is settled ([docs/DESIGN.md](docs/DESIGN.md)).
 **M0 (input/latency spike) — done, GO.** Measured round-trip latency
 (output → input, cable loopback) on device: **7.98 ms**. Comfortably low
 enough for wet-monitored live vocals — locked decision #2 in DESIGN.md is
-confirmed feasible. Next: M1, a single working looper track.
+confirmed feasible.
+
+**M1–M5 — first full pass written and deployed (not yet feel-tested on
+hardware).** The whole instrument exists as code: looper tracks with layered
+undo + bar-quantized punch-in, flavored input FX chains, a threshold drum
+sampler + 16-step probability sequencer, a small synth, momentary punch-in FX,
+and the Omniphone chord-journey port. Built against a source-verified spec
+([docs/v1-spec.md](docs/v1-spec.md)), logic-tested off-device, and passed a
+three-lens adversarial review (realtime-safety / looper-logic / JS↔DSP
+protocol) with all confirmed findings fixed. The DSP state machine passes 18
+host-side checks; device RAM headroom (~1.68 GB) makes the buffer footprint a
+non-issue. **Everything interaction-related still needs on-device tuning** —
+work through [docs/on-device-tests.md](docs/on-device-tests.md).
 
 ## Layout at a glance
 
